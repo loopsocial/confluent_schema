@@ -45,8 +45,9 @@ defmodule ConfluentSchema.Server do
   @spec init(Keyword.t()) :: {:ok, map, {:continue, atom()}}
   def init(opts) do
     Cache.start()
-    state = %{registry: Registry.create(opts), debug: false, period: :timer.minutes(5)}
-    {:ok, state, {:continue, :cache}}
+    default = [debug: false, period: :timer.minutes(5), registry: Registry.create(opts)]
+    state = Keyword.merge(default, opts)
+    {:ok, Map.new(state), {:continue, :cache}}
   end
 
   @doc false
@@ -58,6 +59,7 @@ defmodule ConfluentSchema.Server do
   def handle_info(:cache, state) do
     cache(state.registry, state.debug)
     Process.send_after(self(), :cache, state.period)
+    {:noreply, state}
 
     {:noreply, state}
   end

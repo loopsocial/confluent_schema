@@ -12,8 +12,21 @@ defmodule ConfluentSchema.Registry do
 
   ## Examples
 
-      iex> ConfluentSchema.Registry.get_subject_schemas(client)
-      {:ok, %{"subject" => %{type: "record", name: "MyRecord", fields: []}}}
+      iex> client = RegistryMock.create()
+      iex> Registry.get_subject_schemas(client)
+      {:ok, %{"foo" => %{"type" => "string"}, "bar" => %{"type" => "string"}}}
+
+      iex> client = RegistryMock.create_error_subject()
+      iex> Registry.get_subject_schemas(client)
+      {:error, :get_subjects, 404, "Not Found"}
+
+      iex> client = RegistryMock.create_error_schema()
+      iex> Registry.get_subject_schemas(client)
+      {:error, :get_schema, 404, "Not Found"}
+
+      iex> client = RegistryMock.create_error_decode()
+      iex> Registry.get_subject_schemas(client)
+      {:error, :decode_schema, 1, %Jason.DecodeError{position: 0, token: nil, data: "invalid json"}}
   """
   @spec get_subject_schemas(Registry.client()) :: {:ok, map} | {:error, atom(), integer(), any()}
   def get_subject_schemas(client) do

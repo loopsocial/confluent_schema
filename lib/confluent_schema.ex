@@ -11,7 +11,8 @@ defmodule ConfluentSchema do
   Return `{:error, :not_found}` if the subject is not found.
   Return `{:error, ExJsonSchema.errors()}` if the payload is invalid.
   """
-  @spec validate(map, binary) :: {:ok, map} | {:error, :not_found | ExJsonSchema.errors()}
+  @spec validate(map, binary) ::
+          {:ok, map} | {:error, :not_found} | {:error, ExJsonSchema.errors()} | no_return
   def validate(payload, subject) do
     with {:ok, schema} <- Cache.get(subject),
          :ok <- ExJsonSchema.Validator.validate(schema, payload) do
