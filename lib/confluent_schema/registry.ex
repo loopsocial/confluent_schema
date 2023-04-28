@@ -28,7 +28,7 @@ defmodule ConfluentSchema.Registry do
       iex> Registry.get_subject_schemas(client)
       {:error, :decode_schema, 1, %Jason.DecodeError{position: 0, token: nil, data: "invalid json"}}
   """
-  @spec get_subject_schemas(Registry.client()) :: {:ok, map} | {:error, atom(), integer(), any()}
+  @spec get_subject_schemas(Tesla.Client.t()) :: {:ok, map} | {:error, atom(), integer(), any()}
   def get_subject_schemas(client) do
     with {:ok, subjects} <- get_subjects(client),
          {:ok, subject_schemas} <- get_schemas(client, subjects) do
