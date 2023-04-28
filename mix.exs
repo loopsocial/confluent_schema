@@ -10,7 +10,13 @@ defmodule ConfluentSchema.MixProject do
       package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      source_url: "https://github.com/loopsocial/confluent_schema",
+      homepace_url: "https://hexdocs.pm/confluent_schema/readme.html",
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -19,7 +25,7 @@ defmodule ConfluentSchema.MixProject do
       oroganization: "loopsocial",
       files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/elixir-ecto/postgrex"}
+      links: %{"GitHub" => "https://github.com/loopsocial/confluent_schema"}
     ]
   end
 
