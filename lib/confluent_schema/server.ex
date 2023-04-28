@@ -60,8 +60,6 @@ defmodule ConfluentSchema.Server do
     cache(state.registry, state.debug)
     Process.send_after(self(), :cache, state.period)
     {:noreply, state}
-
-    {:noreply, state}
   end
 
   defp cache(registry, debug) do
