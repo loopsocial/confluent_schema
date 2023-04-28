@@ -10,11 +10,14 @@ defmodule ConfluentSchema.Cache do
   ## Example
 
       iex> Cache.start()
-      true
+      :#{@ets_table}
+
+      iex> Cache.start()
+      iex> assert_raise ArgumentError, fn -> Cache.start() end
   """
   @spec start() :: true | no_return
   def start() do
-    @ets_table == :ets.new(@ets_table, [:named_table, read_concurrency: true])
+    :ets.new(@ets_table, [:named_table, read_concurrency: true])
   end
 
   @doc """
@@ -27,8 +30,8 @@ defmodule ConfluentSchema.Cache do
       iex> Cache.set("my-subject", %{"type" => "string"})
       true
 
-      iex> Cache.set("my-subject", %{"type" => "string"})
-      ArgumentError
+      iex> assert_raise ArgumentError, fn -> Cache.set("my-subject", %{"type" => "string"}) end
+      
   """
   @spec set(binary, map) :: true | no_return
   def set(subject, schema) do
