@@ -2,9 +2,13 @@
 
 Provides cache and validation for confluent schemas that are pulled from a registry.
 
-It mixes [ConfluentSchemaRegistry](https://github.com/cogini/confluent_schema_registry) with
-[ExJsonSchema](https://github.com/jonasschmidt/ex_json_schema/) and [ETS](https://www.erlang.org/doc/man/ets.html)
-to provide fast validation for schemas registered remotely on a registry server like [confluent.cloud](confluent.cloud).
+It mixes 
+
+* [ConfluentSchemaRegistry](https://github.com/cogini/confluent_schema_registry)
+* [ExJsonSchema](https://github.com/jonasschmidt/ex_json_schema/)
+* [ETS](https://www.erlang.org/doc/man/ets.html)
+
+To provide fast validation for schemas registered remotely on a registry server, for example [confluent.cloud](confluent.cloud).
 
 ## Installation
 
