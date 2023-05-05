@@ -21,6 +21,12 @@ defmodule ConfluentSchema.ServerTest do
     assert wait_until(fn -> Cache.get("bar") end)
   end
 
+  test "allow multiple GenServers" do
+    assert {:ok, pid1} = Server.start_link(name: :foo)
+    assert {:ok, pid2} = Server.start_link(name: :bar)
+    assert pid1 != pid2
+  end
+
   defp wait_until(fun) do
     case fun.() do
       {:ok, result} -> result
