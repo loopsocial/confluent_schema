@@ -21,6 +21,13 @@ defmodule ConfluentSchema.ServerTest do
     assert wait_until(fn -> Cache.get("bar") end)
   end
 
+  test "manually update cache" do
+    assert {:error, :not_found} = Cache.get("bar")
+    RegistryMock.set_global_subject("bar")
+    assert :ok = Server.update()
+    Cache.get("bar")
+  end
+
   test "allow multiple GenServers" do
     assert {:ok, pid1} = Server.start_link(name: :foo)
     assert {:ok, pid2} = Server.start_link(name: :bar)

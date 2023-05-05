@@ -42,6 +42,12 @@ defmodule ConfluentSchema.Server do
     GenServer.start_link(__MODULE__, opts, name: name)
   end
 
+  @doc "Used on test setup to block test until server has started."
+  def wait_start(), do: GenServer.call(__MODULE__, :wait_start)
+
+  @doc "Manually update cache"
+  def update(), do: GenServer.call(__MODULE__, :update)
+
   @doc false
   @spec init(Keyword.t()) :: {:ok, map, {:continue, atom()}}
   def init(opts) do
@@ -69,6 +75,17 @@ defmodule ConfluentSchema.Server do
     {:noreply, state}
   end
 
+  @doc false
+  def handle_call(:update, _from, state) do
+    cache(state.registry, state.debug, state.name)
+    {:reply, :ok, state}
+  end
+
+  @doc false
+  def handle_call(:wait_start, _from, state) do
+    {:reply, :ok, state}
+  end
+
   defp cache(registry, debug, name) do
     case Registry.get_subject_schemas(registry) do
       {:ok, subject_schemas} ->
@@ -84,8 +101,4 @@ defmodule ConfluentSchema.Server do
         end
     end
   end
-
-  @doc "Used on test setup to block test until server has started."
-  def wait_start(), do: GenServer.call(__MODULE__, :wait_start)
-  def handle_call(:wait_start, _from, state), do: {:reply, :ok, state}
 end
