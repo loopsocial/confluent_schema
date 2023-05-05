@@ -6,36 +6,7 @@ defmodule ConfluentSchema.Server do
   use GenServer
   alias ConfluentSchema.{Cache, Registry}
 
-  @doc """
-  Start a server to periodically fetch and cache Confluent schemas.
-
-  You can get credentials from [Confluent Cloud](https://confluent.cloud): Login > Home > Environments.
-  Or you can also spin off your own Confluent Schema Registry server.
-
-  ## Options
-
-    * `period` - Period to update schemas (optional, default 5 minutes)
-    * `debug` - Enable debug logs (optional, default false)
-
-  ## ConfluentSchemaRegistry options
-
-    * `base_url` - URL of schema registry (optional, default "http://localhost:8081")
-    * `username` - username for BasicAuth (optional)
-    * `password` - password for BasicAuth (optional)
-    * `adapter` - Tesla adapter config (optional)
-    * `middleware` - List of additional ConfluentSchemaRegistry middlewares (optional)
-
-  ## Example
-
-      opts = [
-        base_url: "https://foobar.region.aws.confluent.cloud",
-        username: "key",
-        password: "secret"
-      ]
-
-      children = [{ConfluentSchema.Server, opts}]
-      Supervisor.start_link(children, strategy: :one_for_one)
-  """
+  @doc "Starts the server"
   @spec start_link(Keyword.t()) :: Supervisor.on_start()
   def start_link(opts) do
     name = Keyword.get(opts, :name, __MODULE__)
@@ -87,5 +58,7 @@ defmodule ConfluentSchema.Server do
 
   @doc "Used on test setup to block test until server has started."
   def wait_start(), do: GenServer.call(__MODULE__, :wait_start)
+
+  @doc false
   def handle_call(:wait_start, _from, state), do: {:reply, :ok, state}
 end
