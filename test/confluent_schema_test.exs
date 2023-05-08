@@ -5,7 +5,8 @@ defmodule ConfluentSchemaTest do
 
   setup do
     RegistryMock.set_global_subject("subject")
-    start_supervised!({Server, [adapter: Tesla.Mock]})
-    Server.wait_start()
+    Server.start_link(adapter: Tesla.Mock, period: 10)
+    Server.update()
+    :ok
   end
 end
