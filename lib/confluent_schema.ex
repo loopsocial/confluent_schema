@@ -32,7 +32,7 @@ defmodule ConfluentSchema do
   end
 
   @doc """
-  Start a server to periodically fetch and cache Confluent schemas.
+  Returns a `Supervisor.child_spec()` for server to periodically fetch and cache Confluent schemas.
 
   You can get credentials from [Confluent Cloud](https://confluent.cloud): Login > Home > Environments.
   Or you can also spin off your own Confluent Schema Registry server.
@@ -55,7 +55,8 @@ defmodule ConfluentSchema do
 
   ## Example
 
-      opts = [
+       opts = [
+        name: :my_custom_registry,
         period: :timer.minutes(5),
         debug: false,
         base_url: "http://localhost:8081",
@@ -68,5 +69,11 @@ defmodule ConfluentSchema do
       children = [{ConfluentSchema, opts}]
       Supervisor.start_link(children, strategy: :one_for_one)
   """
-  def start_link(opts), do: Server.start_link(opts)
+  @spec child_spec(Keyword.t()) :: Supervisor.child_spec()
+  def child_spec(opts) do
+    %{
+      id: Server,
+      start: {Server, :start_link, [opts]}
+    }
+  end
 end
