@@ -2,10 +2,11 @@ defmodule ConfluentSchema.ServerTest do
   use ExUnit.Case, async: false
   alias ConfluentSchema.{Cache, Server}
   doctest ConfluentSchema.Server
+  @period 10
 
   setup do
     RegistryMock.set_global_subject("foo")
-    Server.start_link(adapter: Tesla.Mock, period: 10)
+    Server.start_link(adapter: Tesla.Mock, period: @period)
     Server.update()
     :ok
   end
@@ -31,13 +32,12 @@ defmodule ConfluentSchema.ServerTest do
   test "periodically updates cache" do
     assert {:error, :not_found} = Cache.get("bar")
     RegistryMock.set_global_subject("bar")
-
-    assert wait_until(fn -> Cache.get("bar") end)
+    assert eventually(fn -> Cache.get("bar") end)
   end
 
-  defp wait_until(fun) do
+  defp eventually(fun) do
     case fun.() do
-      {:error, :not_found} -> :timer.sleep(10) && wait_until(fun)
+      {:error, :not_found} -> :timer.sleep(@period) && eventually(fun)
       {:ok, _result} -> :ok
     end
   end
