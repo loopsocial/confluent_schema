@@ -15,7 +15,7 @@ To provide fast validation for schemas registered remotely on a registry server,
 ```elixir
 def deps do
   [
-    {:confluent_schema, "~> 0.1.0"}
+    {:confluent_schema, "~> 0.1.1"}
   ]
 end
 ```
@@ -49,6 +49,4 @@ payload = %{foo: "bar"}
 ConfluentSchema.validate(payload, "my-subject")
 ```
 
-Check out `ConfluentSchema.start_link/1` for documentation about all the options.
-Use the `period` option to customize the interval to refresh schemas on the cache. It is 5 minutes by default.
-Use the `debug` option to log errors in case schemas aren't correctly fetched from the registry.
+Check out `ConfluentSchema.child_spec/1` for documentation about all options.
