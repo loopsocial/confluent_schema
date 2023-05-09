@@ -7,18 +7,13 @@ defmodule ConfluentSchema.ServerTest do
   setup do
     RegistryMock.set_global_subject("foo")
     Server.start_link(adapter: Tesla.Mock, period: @period)
-    Server.wait_start()
+    Server.update()
+    :ok
   end
 
   test "resets cache on start" do
     assert {:ok, _schema} = Cache.get("foo")
     assert {:error, :not_found} = Cache.get("bar")
-  end
-
-  test "periodically updates cache" do
-    assert {:error, :not_found} = Cache.get("bar")
-    RegistryMock.set_global_subject("bar")
-    assert wait_until(fn -> Cache.get("bar") end)
   end
 
   test "allow multiple GenServers" do
@@ -27,10 +22,23 @@ defmodule ConfluentSchema.ServerTest do
     assert pid1 != pid2
   end
 
-  defp wait_until(fun) do
+  test "manually update cache" do
+    assert {:error, :not_found} = Cache.get("bar")
+    RegistryMock.set_global_subject("bar")
+    assert :ok = Server.update()
+    Cache.get("bar")
+  end
+
+  test "periodically updates cache" do
+    assert {:error, :not_found} = Cache.get("bar")
+    RegistryMock.set_global_subject("bar")
+    assert eventually(fn -> Cache.get("bar") end)
+  end
+
+  defp eventually(fun) do
     case fun.() do
-      {:ok, result} -> result
-      _ -> :timer.sleep(@period) && wait_until(fun)
+      {:error, :not_found} -> :timer.sleep(@period) && eventually(fun)
+      {:ok, _result} -> :ok
     end
   end
 end

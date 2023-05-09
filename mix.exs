@@ -22,7 +22,7 @@ defmodule ConfluentSchema.MixProject do
 
   def package() do
     [
-      oroganization: "loopsocial",
+      organization: "loopsocial",
       files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/loopsocial/confluent_schema"}
