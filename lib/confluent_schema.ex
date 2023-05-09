@@ -9,6 +9,7 @@ defmodule ConfluentSchema do
 
   @doc """
   Validates the payload against the schema for the given subject.
+  If you need to validate against multiple schema registries, use the `cache_name` option.
 
   ## Examples
 
@@ -21,10 +22,10 @@ defmodule ConfluentSchema do
       iex> ConfluentSchema.validate(123, "subject")
       {:error, [{"Type mismatch. Expected String but got Integer.", "#"}]}
   """
-  @spec validate(map, binary) ::
+  @spec validate(map, binary, atom()) ::
           {:ok, map} | {:error, :not_found} | {:error, errors} | no_return
-  def validate(payload, subject) do
-    with {:ok, schema} <- Cache.get(subject),
+  def validate(payload, subject, cache_name \\ ConfluentSchema.Cache) do
+    with {:ok, schema} <- Cache.get(subject, cache_name),
          :ok <- Validator.validate(schema, payload) do
       {:ok, payload}
     end
@@ -38,8 +39,11 @@ defmodule ConfluentSchema do
 
   ## Options
 
-    * `period` - Period to update schemas (optional, default 5 minutes)
-    * `debug` - Enable debug logs (optional, default false)
+    * `period` - Period in milliseconds to update schemas (optional integer, default 5 minutes)
+    * `debug` - Enable debug logs (optional boolean, default false)
+    * `name` - Name of the GenServer and ETS cache, (optional atom)
+               Useful when multiple schema registries are needed.
+               (default `ConfluentSchema.Server` for the GenServer and `ConfluentSchema.Cache` for the ETS table)
 
   ## [ConfluentSchemaRegistry](https://hexdocs.pm/confluent_schema_registry/) options
 

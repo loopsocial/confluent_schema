@@ -1,6 +1,5 @@
 defmodule ConfluentSchema.Cache do
   @moduledoc "Cache Confluent schemas on ETS table."
-  @ets_table :confluent_schema_cache
 
   @doc """
   Starts cache for Confluent schemas.
@@ -10,14 +9,15 @@ defmodule ConfluentSchema.Cache do
   ## Example
 
       iex> Cache.start()
-      :#{@ets_table}
+      :"#{__MODULE__}"
 
       iex> Cache.start()
       iex> assert_raise ArgumentError, fn -> Cache.start() end
   """
   @spec start() :: true | no_return
-  def start() do
-    :ets.new(@ets_table, [:named_table, read_concurrency: true])
+
+  def start(table_name \\ __MODULE__) do
+    :ets.new(table_name, [:named_table, read_concurrency: true])
   end
 
   @doc """
@@ -34,8 +34,8 @@ defmodule ConfluentSchema.Cache do
       
   """
   @spec set(binary, map) :: true | no_return
-  def set(subject, schema) do
-    :ets.insert(@ets_table, {subject, schema})
+  def set(subject, schema, table_name \\ __MODULE__) do
+    :ets.insert(table_name, {subject, schema})
   end
 
   @doc """
@@ -54,8 +54,8 @@ defmodule ConfluentSchema.Cache do
       {:error, :not_found}
   """
   @spec get(binary) :: {:ok, map} | {:error, :not_found} | no_return
-  def get(subject) do
-    case :ets.lookup(@ets_table, subject) do
+  def get(subject, table_name \\ __MODULE__) do
+    case :ets.lookup(table_name, subject) do
       [{^subject, schema}] -> {:ok, schema}
       [] -> {:error, :not_found}
     end

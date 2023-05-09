@@ -9,16 +9,23 @@ defmodule ConfluentSchema.Server do
   @doc "Starts the server"
   @spec start_link(Keyword.t()) :: Supervisor.on_start()
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+    name = Keyword.get(opts, :name, __MODULE__)
+    GenServer.start_link(__MODULE__, opts, name: name)
   end
 
   @doc false
   @spec init(Keyword.t()) :: {:ok, map, {:continue, atom()}}
   def init(opts) do
-    Cache.start()
-    default = [debug: false, period: :timer.minutes(5), registry: Registry.create(opts)]
-    state = Keyword.merge(default, opts)
-    {:ok, Map.new(state), {:continue, :cache}}
+    default = [
+      debug: false,
+      name: ConfluentSchema.Cache,
+      period: :timer.minutes(5),
+      registry: Registry.create(opts)
+    ]
+
+    state = default |> Keyword.merge(opts) |> Map.new()
+    Cache.start(state.name)
+    {:ok, state, {:continue, :cache}}
   end
 
   @doc false
@@ -28,18 +35,18 @@ defmodule ConfluentSchema.Server do
   @doc false
   @spec handle_info(atom(), map()) :: {:noreply, map()}
   def handle_info(:cache, state) do
-    cache(state.registry, state.debug)
+    cache(state.registry, state.debug, state.name)
     Process.send_after(self(), :cache, state.period)
     {:noreply, state}
   end
 
-  defp cache(registry, debug) do
+  defp cache(registry, debug, name) do
     case Registry.get_subject_schemas(registry) do
       {:ok, subject_schemas} ->
         Enum.each(subject_schemas, fn {subject, schema} ->
           # For performance, we cache the resolved schema.
           # https://hexdocs.pm/ex_json_schema/readme.html#resolving-a-schema
-          Cache.set(subject, ExJsonSchema.Schema.resolve(schema))
+          Cache.set(subject, ExJsonSchema.Schema.resolve(schema), name)
         end)
 
       {:error, step, code, reason} ->
