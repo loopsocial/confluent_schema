@@ -25,27 +25,30 @@ On `application.ex`:
 
 ```elixir
   def start(_type, _args) do
-    confluent_schema_opts = [
+    opts = [
+      period: :timer.seconds(10),
+      debug: true,
       base_url: "https://foobar.region.aws.confluent.cloud",
       username: "key",
-      password: "secret",
-      period: :timer.minutes(1),
-      debug: true
+      password: "api secret",
     ]
 
-    children = [{ConfluentSchema.Server, confluent_schema_opts}]
+    children = [
+      {ConfluentSchema, opts}
+    ]
 
     supervisor_opts = [strategy: :one_for_one, name: MyApp.Supervisor]
     Supervisor.start_link(children, supervisor_opts)
   end
 ```
 
-Then you can use your confluent schema registry to validate payloads for a subject:
+Then you can use confluent schema registry to validate payloads for a subject:
 
 ```elixir
 payload = %{foo: "bar"}
 ConfluentSchema.validate(payload, "my-subject")
 ```
 
+Check out `ConfluentSchema.start_link/1` for documentation about all the options.
 Use the `period` option to customize the interval to refresh schemas on the cache. It is 5 minutes by default.
 Use the `debug` option to log errors in case schemas aren't correctly fetched from the registry.
