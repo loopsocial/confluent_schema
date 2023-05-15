@@ -40,7 +40,7 @@ defmodule ConfluentSchema.ServerTest do
 
   describe "with option `local: true`" do
     test "loads schema from local files" do
-      Server.start_link(local: true)
+      Server.start_link(local: true, app_name: :confluent_schema)
       assert eventually(fn -> Cache.get("foo") end)
     end
   end
