@@ -4,7 +4,7 @@ defmodule ConfluentSchema.MixProject do
   def project do
     [
       app: :confluent_schema,
-      version: "0.1.1",
+      version: "0.1.2",
       description: "Confluent Schema Cache and Validation",
       elixir: "~> 1.12",
       package: package(),

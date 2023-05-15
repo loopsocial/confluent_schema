@@ -52,6 +52,9 @@ defmodule ConfluentSchema do
     * `password` - password or api secret (optional)
     * `adapter` - Tesla Adapter (optional, default `Tesla.Adapter.Hackney`)
     * `middleware` - List of [Tesla middlewares](https://hexdocs.pm/tesla/readme.html#middleware) (optional)
+    * `local` - Whether to use local schemas from `priv/confluent_schema/*.json` (optional, default false
+                (when set all above options are ignored)
+    * `app_name` - Name of the application where local schemas are (required only if local is true)
 
   ## Example
 
