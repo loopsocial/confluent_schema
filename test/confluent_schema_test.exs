@@ -1,6 +1,6 @@
 defmodule ConfluentSchemaTest do
   use ExUnit.Case, async: false
-  alias ConfluentSchema.Server
+  alias ConfluentSchema.{RegistryMock, Server}
   doctest ConfluentSchema
 
   setup do

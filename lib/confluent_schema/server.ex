@@ -21,6 +21,7 @@ defmodule ConfluentSchema.Server do
   def init(opts) do
     default = [
       debug: false,
+      local: false,
       name: ConfluentSchema.Cache,
       period: :timer.minutes(5),
       registry: Registry.create(opts)
@@ -37,6 +38,25 @@ defmodule ConfluentSchema.Server do
 
   @doc false
   @spec handle_info(atom(), map()) :: {:noreply, map()}
+  def handle_info(:cache, state = %{local: true, app_name: app_name}) do
+    schema_dir =
+      app_name
+      |> :code.priv_dir()
+      |> Path.join("confluent_schema/")
+
+    File.mkdir_p!(schema_dir)
+
+    schema_dir
+    |> Path.join("*.json")
+    |> Path.wildcard()
+    |> Enum.each(fn filename ->
+      schema = filename |> File.read!() |> Jason.decode!() |> ExJsonSchema.Schema.resolve()
+      filename |> Path.basename(".json") |> Cache.set(schema)
+    end)
+
+    {:noreply, state}
+  end
+
   def handle_info(:cache, state) do
     cache(state.registry, state.debug, state.name)
     Process.send_after(self(), :cache, state.period)
