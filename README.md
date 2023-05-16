@@ -15,7 +15,7 @@ To provide fast validation for schemas registered remotely on a registry server,
 ```elixir
 def deps do
   [
-    {:confluent_schema, "~> 0.1.1"}
+    {:confluent_schema, "~> 0.1.2"}
   ]
 end
 ```
@@ -50,3 +50,28 @@ ConfluentSchema.validate(payload, "my-subject")
 ```
 
 Check out `ConfluentSchema.child_spec/1` for documentation about all options.
+
+## Test
+On `test` or `dev` environment, it is common to not have internet access. In this case,
+we want to load the schemas from local files. To achieve this, place `subject_name.json`
+files inside `priv/confluent_schema/` and configure your application like this:
+
+```elixir
+  # application.ex
+
+  children = [
+    {ConfluentSchema, Application.fetch_env!(:my_app, :confluent_schema)}
+  ]
+
+  # config.exs
+  config :my_app, :confluent_schema, local: true, app_name: :my_app
+
+  # runtime.exs
+  config :naboo, :confluent_schema,
+    base_url: System.fetch_env!("CONFLUENT_SCHEMA_REGISTRY_URL"),
+    username: System.fetch_env!("CONFLUENT_SCHEMA_REGISTRY_API_KEY"),
+    password: System.fetch_env!("CONFLUENT_SCHEMA_REGISTRY_API_SECRET")
+```
+
+Now, when `ConfluentSchema` starts, it will load the schemas from your app's `priv/confluent_schema/`
+directory, on `dev` and `test` environment.

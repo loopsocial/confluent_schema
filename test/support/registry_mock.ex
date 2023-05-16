@@ -1,4 +1,4 @@
-defmodule RegistryMock do
+defmodule ConfluentSchema.RegistryMock do
   import Tesla.Mock
   alias ConfluentSchema.Registry
 
