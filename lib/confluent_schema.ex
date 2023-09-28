@@ -42,8 +42,8 @@ defmodule ConfluentSchema do
     * `period` - Period in milliseconds to update schemas (optional integer, default 5 minutes)
     * `debug` - Enable debug logs (optional boolean, default false)
     * `name` - Name of the GenServer and ETS cache, (optional atom)  
-    Useful when multiple schema registries are needed.  
-    (default `ConfluentSchema.Server` for the GenServer and `ConfluentSchema.Cache` for the ETS table)
+    Name is useful when multiple schema registries are needed.  
+    Default names are `ConfluentSchema.Server` for the GenServer and `ConfluentSchema.Cache` for the ETS table.
 
   ## [ConfluentSchemaRegistry](https://hexdocs.pm/confluent_schema_registry/) options
 
@@ -53,9 +53,9 @@ defmodule ConfluentSchema do
     * `adapter` - Tesla Adapter (optional, default `Tesla.Adapter.Hackney`)
     * `middleware` - List of [Tesla middlewares](https://hexdocs.pm/tesla/readme.html#middleware) (optional)
     * `local` - Whether to use local schemas from `priv/confluent_schema/*.json`  
-    (optional, default false when set all above options are ignored)
-    * `app_name` - Name of the application where local schemas are
-    (required only if local is true)
+    Optional, default false. When set all above options are ignored.
+    * `app_name` - Name of the application where local schemas are  
+    App name is required when local is true
 
   ## Example
 
