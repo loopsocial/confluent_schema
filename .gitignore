@@ -26,6 +26,7 @@ confluent_schema-*.tar
 /tmp/
 
 # Devenv
+.direnv
 .devenv*
-devenv.local.nix
+devenv.*
 
