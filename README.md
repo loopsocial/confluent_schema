@@ -56,7 +56,17 @@ On `test` or `dev` environment, it is common to not have internet access. In thi
 we want to load the schemas from local files.
 
 To achieve this, put a `subject_name.json` file inside `priv/confluent_schema/`, or run
-our `confluent_schema.download` mix task, and configure your application like this:
+the `mix confluent_schema.download` mix task defined in `Mix.Tasks.ConfluentSchema.Download`:
+
+```elixir
+$ mix confluent_schema.download \
+  --app-name my_app \
+  --username API_KEY \
+  --password API_SECRET
+  --base-url https://foobar.region.aws.confluent.cloud \
+```
+
+And configure your application like this:
 
 ```elixir
   # application.ex

@@ -1,13 +1,19 @@
 defmodule Mix.Tasks.ConfluentSchema.Download do
-  @shortdoc "Download schemas from a Registry server to priv/confluent_schema/"
-  @usage "mix confluent_schema.download --app-name my_app --base-url https://foobar.region.aws.confluent.cloud --username API_KEY --password API_SECRET"
+  @shortdoc "Download schemas from a Registry server to `priv/confluent_schema/`."
+  @usage """
+    mix confluent_schema.download \\
+        --app-name my_app \\
+        --username API_KEY \\
+        --password API_SECRET \\
+        --base-url https://foobar.region.aws.confluent.cloud
+  """
 
   @moduledoc """
   #{@shortdoc}
 
   ## Example
 
-      #{@usage}
+    #{@usage}
   """
 
   use Mix.Task
