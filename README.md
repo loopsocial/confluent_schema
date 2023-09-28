@@ -1,4 +1,4 @@
-# ConfluentSchema
+# ConfluentSchema ![elixir workflow](https://github.com/loopsocial/confluent_schema/actions/workflows/elixir.yml/badge.svg)
 
 Provides cache and validation for confluent schemas that are pulled from a registry.
 
