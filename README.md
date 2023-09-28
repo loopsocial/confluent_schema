@@ -58,12 +58,12 @@ we want to load the schemas from local files.
 To achieve this, put a `subject_name.json` file inside `priv/confluent_schema/`, or run
 the `mix confluent_schema.download` mix task defined in `Mix.Tasks.ConfluentSchema.Download`:
 
-```elixir
+```bash
 $ mix confluent_schema.download \
   --app-name my_app \
   --username API_KEY \
-  --password API_SECRET
-  --base-url https://foobar.region.aws.confluent.cloud \
+  --password API_SECRET \
+  --base-url https://foobar.region.aws.confluent.cloud 
 ```
 
 And configure your application like this:
